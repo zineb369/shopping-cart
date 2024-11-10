@@ -1,5 +1,5 @@
-# Use a base image with OpenJDK 8 and Maven
-FROM maven:3.8.7-openjdk-8 AS build
+# Use a base image with Maven and OpenJDK 8
+FROM maven:3.8-openjdk-8 AS build
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY . .
 RUN mvn clean install
 
 # Second stage: Use Tomcat to deploy the application
-FROM tomcat:8.0
+FROM tomcat:8.5-jdk8
 
 # Copy the built WAR file to the Tomcat webapps directory
 COPY --from=build /app/target/shopping-cart.war /usr/local/tomcat/webapps/shopping-cart.war
