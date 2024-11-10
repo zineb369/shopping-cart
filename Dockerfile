@@ -14,7 +14,8 @@ RUN mvn clean install
 FROM tomcat:8.5-jdk8
 
 # Copy the built WAR file to the Tomcat webapps directory
-COPY --from=build /app/target/shopping-cart.war /usr/local/tomcat/webapps/shopping-cart.war
+COPY --from=build /app/target/shopping-cart-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/shopping-cart.war
+
 
 # Expose the port the app will run on
 EXPOSE 8080
