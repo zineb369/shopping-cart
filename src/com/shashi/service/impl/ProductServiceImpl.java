@@ -185,44 +185,44 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<ProductBean> getAllProducts() {
-		List<ProductBean> products = new ArrayList<ProductBean>();
+            List<ProductBean> products = new ArrayList<ProductBean>();
 
-		Connection con = DBUtil.provideConnection();
+               // Check if prodDao is null before proceeding
+                if (prodDao == null) {
+        System.out.println("Error: prodDao is null!");
+        return products; // or you could throw an exception here
+    }
 
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+    // Your existing code to retrieve products
+    Connection con = DBUtil.provideConnection();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
 
-		try {
-			ps = con.prepareStatement("select * from product");
+    try {
+        ps = con.prepareStatement("select * from product");
+        rs = ps.executeQuery();
 
-			rs = ps.executeQuery();
+        while (rs.next()) {
+            ProductBean product = new ProductBean();
+            product.setProdId(rs.getString(1));
+            product.setProdName(rs.getString(2));
+            product.setProdType(rs.getString(3));
+            product.setProdInfo(rs.getString(4));
+            product.setProdPrice(rs.getDouble(5));
+            product.setProdQuantity(rs.getInt(6));
+            product.setProdImage(rs.getAsciiStream(7));
+            products.add(product);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        DBUtil.closeConnection(con);
+        DBUtil.closeConnection(ps);
+        DBUtil.closeConnection(rs);
+    }
 
-			while (rs.next()) {
-
-				ProductBean product = new ProductBean();
-
-				product.setProdId(rs.getString(1));
-				product.setProdName(rs.getString(2));
-				product.setProdType(rs.getString(3));
-				product.setProdInfo(rs.getString(4));
-				product.setProdPrice(rs.getDouble(5));
-				product.setProdQuantity(rs.getInt(6));
-				product.setProdImage(rs.getAsciiStream(7));
-
-				products.add(product);
-
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		DBUtil.closeConnection(con);
-		DBUtil.closeConnection(ps);
-		DBUtil.closeConnection(rs);
-
-		return products;
-	}
+    return products;
+     }
 
 	@Override
 	public List<ProductBean> getAllProductsByType(String type) {
